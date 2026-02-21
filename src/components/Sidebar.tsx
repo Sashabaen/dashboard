@@ -1,30 +1,50 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, GitCompareArrows, History, Settings, Scale } from 'lucide-react';
+import {
+  LayoutDashboard,
+  GitCompareArrows,
+  History,
+  Settings,
+  Shield,
+  FileText,
+  AlertCircle,
+} from 'lucide-react';
 import { useRater } from '../context/RaterContext';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/compare', icon: GitCompareArrows, label: 'Compare' },
+  { to: '/submissions', icon: FileText, label: 'Submissions' },
+  { to: '/compare', icon: GitCompareArrows, label: 'Compare Quotes' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function Sidebar() {
-  const { stats } = useRater();
-  const progress = stats.totalTasks > 0
-    ? Math.round((stats.completedTasks / stats.totalTasks) * 100)
-    : 0;
+  const { submissions, stats } = useRater();
+  const activeCount = submissions.filter(
+    s => s.status === 'quoting' || s.status === 'quoted'
+  ).length;
+  const urgentCount = submissions.filter(s => {
+    if (s.status !== 'quoted') return false;
+    const hasExpiring = s.quotes.some(q => {
+      if (!q.expiresAt) return false;
+      const daysLeft = Math.ceil(
+        (new Date(q.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+      );
+      return daysLeft <= 7 && daysLeft >= 0;
+    });
+    return hasExpiring;
+  }).length;
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-            <Scale className="w-5 h-5 text-white" />
+            <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">RaterHub</h1>
-            <p className="text-xs text-gray-500">Comparison Tool</p>
+            <h1 className="text-lg font-bold text-gray-900">RaterPro</h1>
+            <p className="text-xs text-gray-500">Commercial Insurance</p>
           </div>
         </div>
       </div>
@@ -44,29 +64,42 @@ export default function Sidebar() {
           >
             <Icon className="w-5 h-5" />
             {label}
-            {label === 'Compare' && stats.pendingTasks > 0 && (
+            {label === 'Compare Quotes' && activeCount > 0 && (
               <span className="ml-auto bg-primary-100 text-primary-700 text-xs font-semibold px-2 py-0.5 rounded-full">
-                {stats.pendingTasks}
+                {activeCount}
               </span>
             )}
           </NavLink>
         ))}
       </nav>
 
+      {urgentCount > 0 && (
+        <div className="px-4 pb-2">
+          <div className="bg-warning-50 border border-amber-200 rounded-lg p-3">
+            <div className="flex items-center gap-2 text-amber-700 text-sm font-medium">
+              <AlertCircle className="w-4 h-4" />
+              {urgentCount} quote{urgentCount > 1 ? 's' : ''} expiring soon
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="p-4 border-t border-gray-200">
         <div className="bg-gray-50 rounded-lg p-3">
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-600">Progress</span>
-            <span className="font-semibold text-gray-900">{progress}%</span>
+            <span className="text-gray-600">Conversion Rate</span>
+            <span className="font-semibold text-gray-900">
+              {Math.round(stats.conversionRate * 100)}%
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-primary-600 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
+              className="bg-success-500 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${stats.conversionRate * 100}%` }}
             />
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            {stats.completedTasks} of {stats.totalTasks} tasks completed
+            {stats.policiesBound} of {stats.policiesBound + stats.activeSubmissions} bound
           </p>
         </div>
       </div>

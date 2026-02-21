@@ -1,110 +1,73 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import type { ComparisonTask, Rating, RaterProfile, DashboardStats, RatingChoice } from '../types';
-import { mockTasks, mockRatings, mockProfile, mockStats } from '../data/mockData';
+import type { Submission, BrokerProfile, DashboardStats, CarrierQuote } from '../types';
+import { mockSubmissions, mockProfile, mockStats } from '../data/mockData';
 
 interface RaterContextType {
-  tasks: ComparisonTask[];
-  ratings: Rating[];
-  profile: RaterProfile;
+  submissions: Submission[];
+  profile: BrokerProfile;
   stats: DashboardStats;
-  currentTaskIndex: number;
-  getCurrentTask: () => ComparisonTask | null;
-  submitRating: (choice: RatingChoice, confidence: number, reasoning: string, timeSpentMs: number) => void;
-  skipTask: () => void;
-  getUnratedTasks: () => ComparisonTask[];
-  isTaskRated: (taskId: string) => boolean;
-  updateProfile: (updates: Partial<RaterProfile>) => void;
+  getSubmissionById: (id: string) => Submission | undefined;
+  getActiveSubmissions: () => Submission[];
+  selectQuote: (submissionId: string, quoteId: string) => void;
+  bindQuote: (submissionId: string, quoteId: string) => void;
+  updateProfile: (updates: Partial<BrokerProfile>) => void;
+  getQuotesForLine: (submission: Submission, line: string) => CarrierQuote[];
 }
 
 const RaterContext = createContext<RaterContextType | null>(null);
 
 export function RaterProvider({ children }: { children: ReactNode }) {
-  const [tasks] = useState<ComparisonTask[]>(mockTasks);
-  const [ratings, setRatings] = useState<Rating[]>(mockRatings);
-  const [profile, setProfile] = useState<RaterProfile>(mockProfile);
-  const [stats, setStats] = useState<DashboardStats>(mockStats);
-  const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
+  const [submissions, setSubmissions] = useState<Submission[]>(mockSubmissions);
+  const [profile, setProfile] = useState<BrokerProfile>(mockProfile);
+  const [stats] = useState<DashboardStats>(mockStats);
 
-  const getUnratedTasks = useCallback(() => {
-    const ratedTaskIds = new Set(ratings.map(r => r.taskId));
-    return tasks.filter(t => !ratedTaskIds.has(t.id));
-  }, [tasks, ratings]);
+  const getSubmissionById = useCallback((id: string) => {
+    return submissions.find(s => s.id === id);
+  }, [submissions]);
 
-  const isTaskRated = useCallback((taskId: string) => {
-    return ratings.some(r => r.taskId === taskId);
-  }, [ratings]);
+  const getActiveSubmissions = useCallback(() => {
+    return submissions.filter(s => s.status !== 'bound' && s.status !== 'declined');
+  }, [submissions]);
 
-  const getCurrentTask = useCallback((): ComparisonTask | null => {
-    const unrated = getUnratedTasks();
-    return unrated[currentTaskIndex] || null;
-  }, [getUnratedTasks, currentTaskIndex]);
+  const getQuotesForLine = useCallback((submission: Submission, line: string) => {
+    return submission.quotes.filter(q => q.line === line);
+  }, []);
 
-  const submitRating = useCallback((
-    choice: RatingChoice,
-    confidence: number,
-    reasoning: string,
-    timeSpentMs: number
-  ) => {
-    const task = getCurrentTask();
-    if (!task) return;
+  const selectQuote = useCallback((submissionId: string, quoteId: string) => {
+    setSubmissions(prev => prev.map(s =>
+      s.id === submissionId ? { ...s, selectedQuoteId: quoteId } : s
+    ));
+  }, []);
 
-    const newRating: Rating = {
-      id: `rating-${Date.now()}`,
-      taskId: task.id,
-      choice,
-      confidence,
-      reasoning,
-      timeSpentMs,
-      ratedAt: new Date().toISOString(),
-      raterName: profile.name,
-    };
-
-    setRatings(prev => [...prev, newRating]);
-    setProfile(prev => ({
-      ...prev,
-      totalRatings: prev.totalRatings + 1,
-      averageTimeMs: Math.round(
-        (prev.averageTimeMs * prev.totalRatings + timeSpentMs) / (prev.totalRatings + 1)
-      ),
+  const bindQuote = useCallback((submissionId: string, quoteId: string) => {
+    setSubmissions(prev => prev.map(s => {
+      if (s.id !== submissionId) return s;
+      return {
+        ...s,
+        status: 'bound' as const,
+        selectedQuoteId: quoteId,
+        quotes: s.quotes.map(q =>
+          q.id === quoteId ? { ...q, status: 'bound' as const, bindable: false } : q
+        ),
+      };
     }));
-    setStats(prev => ({
-      ...prev,
-      completedTasks: prev.completedTasks + 1,
-      pendingTasks: prev.pendingTasks - 1,
-      choiceDistribution: {
-        ...prev.choiceDistribution,
-        [choice]: prev.choiceDistribution[choice] + 1,
-      },
-    }));
-    setCurrentTaskIndex(0);
-  }, [getCurrentTask, profile]);
+  }, []);
 
-  const skipTask = useCallback(() => {
-    const unrated = getUnratedTasks();
-    if (currentTaskIndex < unrated.length - 1) {
-      setCurrentTaskIndex(prev => prev + 1);
-    } else {
-      setCurrentTaskIndex(0);
-    }
-  }, [getUnratedTasks, currentTaskIndex]);
-
-  const updateProfile = useCallback((updates: Partial<RaterProfile>) => {
+  const updateProfile = useCallback((updates: Partial<BrokerProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
   }, []);
 
   return (
     <RaterContext.Provider value={{
-      tasks,
-      ratings,
+      submissions,
       profile,
       stats,
-      currentTaskIndex,
-      getCurrentTask,
-      submitRating,
-      skipTask,
-      getUnratedTasks,
-      isTaskRated,
+      getSubmissionById,
+      getActiveSubmissions,
+      selectQuote,
+      bindQuote,
       updateProfile,
+      getQuotesForLine,
     }}>
       {children}
     </RaterContext.Provider>
