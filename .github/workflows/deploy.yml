@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/create-rater-dashboard-50BZU]
   workflow_dispatch:
 
 permissions:
