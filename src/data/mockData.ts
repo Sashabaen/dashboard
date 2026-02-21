@@ -1,0 +1,232 @@
+import type { ComparisonTask, Rating, RaterProfile, DashboardStats } from '../types';
+
+export const mockTasks: ComparisonTask[] = [
+  {
+    id: 'task-001',
+    prompt: 'Explain quantum computing to a 10-year-old',
+    category: 'Explanation',
+    difficulty: 'medium',
+    itemA: {
+      id: 'item-001a',
+      content: 'Imagine you have a magic coin that can be both heads AND tails at the same time! That\'s kind of like quantum computing. Regular computers use bits that are either 0 or 1, like a coin that\'s either heads or tails. But quantum computers use "qubits" that can be both 0 and 1 at the same time. This means they can try lots of answers at once, making them super fast at solving certain puzzles!',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-001b',
+      content: 'Quantum computing is a type of computation that harnesses quantum mechanical phenomena such as superposition and entanglement. Unlike classical bits that exist in states of 0 or 1, quantum bits (qubits) can exist in multiple states simultaneously, enabling parallel processing of information at an exponential scale compared to traditional computing architectures.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T10:00:00Z',
+  },
+  {
+    id: 'task-002',
+    prompt: 'Write a haiku about programming',
+    category: 'Creative Writing',
+    difficulty: 'easy',
+    itemA: {
+      id: 'item-002a',
+      content: 'Silent keystrokes fall\nBugs hide in the morning code\nCoffee saves us all',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-002b',
+      content: 'Lines of logic flow\nThrough the silicon pathways\nCreation from thought',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T11:00:00Z',
+  },
+  {
+    id: 'task-003',
+    prompt: 'What are the health benefits of regular exercise?',
+    category: 'Factual',
+    difficulty: 'easy',
+    itemA: {
+      id: 'item-003a',
+      content: 'Regular exercise offers numerous health benefits: it strengthens the cardiovascular system, reducing heart disease risk by up to 35%. It helps maintain healthy weight, improves bone density, and boosts the immune system. Exercise also releases endorphins, which reduce stress and improve mood. Studies show it can lower the risk of type 2 diabetes by 40% and certain cancers by 20-30%.',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-003b',
+      content: 'Exercise is good for you! It makes your heart stronger, helps you lose weight, and makes you feel happier. You should try to exercise at least 30 minutes a day. Some good exercises include walking, running, swimming, and cycling. Exercise can also help you sleep better at night.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T12:00:00Z',
+  },
+  {
+    id: 'task-004',
+    prompt: 'Explain the concept of recursion in programming',
+    category: 'Technical',
+    difficulty: 'medium',
+    itemA: {
+      id: 'item-004a',
+      content: 'Recursion is when a function calls itself to solve a problem by breaking it into smaller, similar subproblems. Think of it like Russian nesting dolls — each doll contains a smaller version of itself.\n\nA recursive function needs two things:\n1. A base case — the simplest version that stops the recursion\n2. A recursive case — where the function calls itself with a simpler input\n\nExample: calculating factorial\n```\nfunction factorial(n) {\n  if (n <= 1) return 1;        // base case\n  return n * factorial(n - 1);  // recursive case\n}\n```',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-004b',
+      content: 'Recursion is a programming technique where a function invokes itself as a subroutine. This enables the function to be repeated several times, as it can call itself during its execution. Recursion is often used for tasks that can be defined in terms of similar subtasks. It is important to define a base condition to prevent infinite recursion. Common applications include tree traversal, sorting algorithms like merge sort and quicksort, and mathematical computations like Fibonacci sequences.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T13:00:00Z',
+  },
+  {
+    id: 'task-005',
+    prompt: 'Write a persuasive argument for why cities should invest in public transportation',
+    category: 'Persuasive Writing',
+    difficulty: 'hard',
+    itemA: {
+      id: 'item-005a',
+      content: 'Investing in public transportation isn\'t just smart city planning — it\'s an economic imperative. Every $1 invested in public transit generates $4 in economic returns. Cities with robust transit systems see 23% higher property values near transit corridors, attract more businesses, and reduce the $87 billion annual cost of traffic congestion in the US alone.\n\nBeyond economics, public transit is our most powerful tool against urban emissions, removing an average of 63 cars per bus from the road. It provides equitable access to jobs and education for communities that can\'t afford car ownership. The evidence is clear: cities that invest in transit invest in their future.',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-005b',
+      content: 'Cities should definitely invest in public transportation because it is good for the environment and helps people get around. Many people can\'t afford cars, so buses and trains give them a way to get to work and school. Public transportation also reduces traffic jams, which is nice for everyone. Plus, it creates jobs for drivers and maintenance workers. Overall, public transportation makes cities better places to live and work.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T14:00:00Z',
+  },
+  {
+    id: 'task-006',
+    prompt: 'Describe the water cycle',
+    category: 'Explanation',
+    difficulty: 'easy',
+    itemA: {
+      id: 'item-006a',
+      content: 'The water cycle is the continuous movement of water on, above, and below Earth\'s surface. It begins with evaporation, where the sun heats water in oceans and lakes, turning it into vapor. This vapor rises and cools, forming clouds through condensation. When clouds become heavy with moisture, precipitation occurs as rain or snow. Water then flows through rivers back to oceans (runoff) or seeps into the ground (infiltration), and the cycle begins again.',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-006b',
+      content: 'Water moves in a cycle. The sun makes water evaporate from the oceans. It goes up into the sky and makes clouds. Then it rains. The rain goes into rivers and back to the ocean. Then it starts over again. This has been happening for billions of years.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-20T15:00:00Z',
+  },
+  {
+    id: 'task-007',
+    prompt: 'Compare the pros and cons of remote work vs office work',
+    category: 'Analysis',
+    difficulty: 'hard',
+    itemA: {
+      id: 'item-007a',
+      content: 'Remote work offers flexibility, eliminates commute time (saving ~41 minutes/day on average), and can boost productivity by 13% according to Stanford research. However, it risks isolation, blurred work-life boundaries, and communication challenges.\n\nOffice work facilitates spontaneous collaboration, clearer boundaries, and stronger team culture. Yet it introduces commute stress, higher overhead costs, and less schedule flexibility.\n\nThe optimal approach for most organizations is likely a hybrid model that captures the deep-focus benefits of remote work while preserving the collaborative advantages of in-person interaction.',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-007b',
+      content: 'Remote Work Pros:\n- Work from anywhere\n- Flexible schedule\n- No commute\n- Comfortable environment\n\nRemote Work Cons:\n- Loneliness\n- Distractions at home\n- Hard to separate work and life\n\nOffice Work Pros:\n- Social interaction\n- Better equipment\n- Structured routine\n\nOffice Work Cons:\n- Long commute\n- Less flexibility\n- Office politics\n\nBoth have their advantages and the best choice depends on the individual.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-21T09:00:00Z',
+  },
+  {
+    id: 'task-008',
+    prompt: 'Generate a creative story opening about a detective',
+    category: 'Creative Writing',
+    difficulty: 'hard',
+    itemA: {
+      id: 'item-008a',
+      content: 'The rain hadn\'t stopped in eleven days, and Detective Mara Chen was beginning to think the city was trying to wash away its sins. She stood at the edge of the pier, watching the harbor swallow the last traces of daylight, her coat heavy with water and her mind heavier with the case file tucked inside it. Three victims. Three locked rooms. And in each one, a single origami crane left on the windowsill, its paper bone-dry despite the endless downpour outside.',
+      source: 'Model A',
+    },
+    itemB: {
+      id: 'item-008b',
+      content: 'Detective John Smith walked into his office on a Monday morning. He had a new case to solve. Someone had stolen a valuable painting from the city museum over the weekend. He poured himself a cup of coffee and started looking through the evidence files on his desk. It was going to be a long day.',
+      source: 'Model B',
+    },
+    createdAt: '2026-02-21T10:00:00Z',
+  },
+];
+
+export const mockRatings: Rating[] = [
+  {
+    id: 'rating-001',
+    taskId: 'task-001',
+    choice: 'A',
+    confidence: 4,
+    reasoning: 'Response A is much more appropriate for the target audience (10-year-old). It uses relatable analogies and simple language.',
+    timeSpentMs: 45000,
+    ratedAt: '2026-02-20T10:15:00Z',
+    raterName: 'Alex Johnson',
+  },
+  {
+    id: 'rating-002',
+    taskId: 'task-002',
+    choice: 'tie',
+    confidence: 3,
+    reasoning: 'Both haikus are well-crafted with proper 5-7-5 syllable structure. A is more playful while B is more contemplative.',
+    timeSpentMs: 32000,
+    ratedAt: '2026-02-20T11:10:00Z',
+    raterName: 'Alex Johnson',
+  },
+  {
+    id: 'rating-003',
+    taskId: 'task-003',
+    choice: 'A',
+    confidence: 5,
+    reasoning: 'Response A provides specific statistics and a more comprehensive overview of health benefits.',
+    timeSpentMs: 28000,
+    ratedAt: '2026-02-20T12:08:00Z',
+    raterName: 'Alex Johnson',
+  },
+  {
+    id: 'rating-004',
+    taskId: 'task-004',
+    choice: 'A',
+    confidence: 4,
+    reasoning: 'Includes a concrete code example which is very helpful for understanding recursion. The Russian doll analogy is effective.',
+    timeSpentMs: 55000,
+    ratedAt: '2026-02-20T13:20:00Z',
+    raterName: 'Alex Johnson',
+  },
+  {
+    id: 'rating-005',
+    taskId: 'task-005',
+    choice: 'A',
+    confidence: 5,
+    reasoning: 'Response A uses specific data, compelling economic arguments, and strong rhetorical structure. Response B is too generic.',
+    timeSpentMs: 62000,
+    ratedAt: '2026-02-20T14:25:00Z',
+    raterName: 'Alex Johnson',
+  },
+];
+
+export const mockProfile: RaterProfile = {
+  name: 'Alex Johnson',
+  email: 'alex.johnson@example.com',
+  expertise: ['Creative Writing', 'Technical', 'Explanation'],
+  totalRatings: 5,
+  averageTimeMs: 44400,
+  agreementRate: 0.87,
+};
+
+export const mockStats: DashboardStats = {
+  totalTasks: 8,
+  completedTasks: 5,
+  pendingTasks: 3,
+  averageTimeMs: 44400,
+  choiceDistribution: {
+    A: 4,
+    B: 0,
+    tie: 1,
+    both_bad: 0,
+  },
+  dailyRatings: [
+    { date: '2026-02-15', count: 3 },
+    { date: '2026-02-16', count: 5 },
+    { date: '2026-02-17', count: 2 },
+    { date: '2026-02-18', count: 7 },
+    { date: '2026-02-19', count: 4 },
+    { date: '2026-02-20', count: 5 },
+    { date: '2026-02-21', count: 0 },
+  ],
+  categoryBreakdown: [
+    { category: 'Explanation', count: 2, completed: 1 },
+    { category: 'Creative Writing', count: 2, completed: 1 },
+    { category: 'Factual', count: 1, completed: 1 },
+    { category: 'Technical', count: 1, completed: 1 },
+    { category: 'Persuasive Writing', count: 1, completed: 1 },
+    { category: 'Analysis', count: 1, completed: 0 },
+  ],
+};
