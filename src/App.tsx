@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { RaterProvider } from './context/RaterContext';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
@@ -8,7 +8,7 @@ import Settings from './pages/Settings';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <RaterProvider>
         <Routes>
           <Route element={<Layout />}>
@@ -19,6 +19,6 @@ export default function App() {
           </Route>
         </Routes>
       </RaterProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
