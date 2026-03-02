@@ -4,9 +4,9 @@ import {
   GitCompareArrows,
   History,
   Settings,
-  Shield,
   FileText,
-  AlertCircle,
+  AlertTriangle,
+  Zap,
 } from 'lucide-react';
 import { useRater } from '../context/RaterContext';
 
@@ -19,53 +19,57 @@ const navItems = [
 ];
 
 export default function Sidebar() {
-  const { submissions, stats } = useRater();
+  const { submissions, stats, profile } = useRater();
   const activeCount = submissions.filter(
     s => s.status === 'quoting' || s.status === 'quoted'
   ).length;
   const urgentCount = submissions.filter(s => {
     if (s.status !== 'quoted') return false;
-    const hasExpiring = s.quotes.some(q => {
+    return s.quotes.some(q => {
       if (!q.expiresAt) return false;
       const daysLeft = Math.ceil(
         (new Date(q.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       );
       return daysLeft <= 7 && daysLeft >= 0;
     });
-    return hasExpiring;
   }).length;
 
+  const initials = profile.name.split(' ').map(n => n[0]).join('');
+
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
-      <div className="p-6 border-b border-gray-200">
+    <aside className="w-60 bg-[#0d0d17] border-r border-[#1c1c2a] min-h-screen flex flex-col shrink-0">
+      {/* Logo */}
+      <div className="px-5 py-5 border-b border-[#1c1c2a]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-            <Shield className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
+            <Zap className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">RaterPro</h1>
-            <p className="text-xs text-gray-500">Commercial Insurance</p>
+            <p className="text-sm font-bold text-white leading-tight">RaterPro</p>
+            <p className="text-xs text-slate-600">Commercial Insurance</p>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
+            end={to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                  : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
               }`
             }
           >
-            <Icon className="w-5 h-5" />
-            {label}
+            <Icon className="w-4 h-4 shrink-0" />
+            <span className="truncate">{label}</span>
             {label === 'Compare Quotes' && activeCount > 0 && (
-              <span className="ml-auto bg-primary-100 text-primary-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+              <span className="ml-auto bg-indigo-500/15 text-indigo-400 text-xs font-semibold px-1.5 py-0.5 rounded-full shrink-0">
                 {activeCount}
               </span>
             )}
@@ -73,34 +77,50 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      {/* Urgent alert */}
       {urgentCount > 0 && (
-        <div className="px-4 pb-2">
-          <div className="bg-warning-50 border border-amber-200 rounded-lg p-3">
-            <div className="flex items-center gap-2 text-amber-700 text-sm font-medium">
-              <AlertCircle className="w-4 h-4" />
+        <div className="px-3 pb-3">
+          <div className="bg-amber-500/8 border border-amber-500/20 rounded-lg px-3 py-2.5">
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-medium">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
               {urgentCount} quote{urgentCount > 1 ? 's' : ''} expiring soon
             </div>
           </div>
         </div>
       )}
 
-      <div className="p-4 border-t border-gray-200">
-        <div className="bg-gray-50 rounded-lg p-3">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-600">Conversion Rate</span>
-            <span className="font-semibold text-gray-900">
+      {/* Conversion rate */}
+      <div className="px-3 pb-3">
+        <div className="bg-[#13131e] border border-[#1c1c2a] rounded-lg px-3 py-3">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs text-slate-600">Conversion Rate</span>
+            <span className="text-xs font-semibold text-white">
               {Math.round(stats.conversionRate * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-[#1c1c2a] rounded-full h-1">
             <div
-              className="bg-success-500 h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-indigo-500 to-violet-500 h-1 rounded-full transition-all duration-700"
               style={{ width: `${stats.conversionRate * 100}%` }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-slate-700 mt-1.5">
             {stats.policiesBound} of {stats.policiesBound + stats.activeSubmissions} bound
           </p>
+        </div>
+      </div>
+
+      {/* User profile */}
+      <div className="px-3 pb-4 border-t border-[#1c1c2a] pt-3">
+        <div className="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-white/[0.03] transition-colors cursor-pointer group">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            {initials}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-white truncate">{profile.name}</p>
+            <p className="text-xs text-slate-600 truncate">{profile.agency}</p>
+          </div>
+          <Settings className="w-3.5 h-3.5 text-slate-700 group-hover:text-slate-500 transition-colors shrink-0" />
         </div>
       </div>
     </aside>
