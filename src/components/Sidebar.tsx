@@ -36,14 +36,14 @@ export default function Sidebar() {
   }).length;
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
-      <div className="p-6 border-b border-gray-200">
+    <aside className="w-64 bg-gray-900 border-r border-gray-800 min-h-screen flex flex-col">
+      <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">RaterPro</h1>
+            <h1 className="text-lg font-bold text-gray-100">RaterPro</h1>
             <p className="text-xs text-gray-500">Commercial Insurance</p>
           </div>
         </div>
@@ -57,15 +57,15 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-primary-900/50 text-primary-400'
+                  : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
               }`
             }
           >
             <Icon className="w-5 h-5" />
             {label}
             {label === 'Compare Quotes' && activeCount > 0 && (
-              <span className="ml-auto bg-primary-100 text-primary-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+              <span className="ml-auto bg-primary-900/60 text-primary-400 text-xs font-semibold px-2 py-0.5 rounded-full">
                 {activeCount}
               </span>
             )}
@@ -75,8 +75,8 @@ export default function Sidebar() {
 
       {urgentCount > 0 && (
         <div className="px-4 pb-2">
-          <div className="bg-warning-50 border border-amber-200 rounded-lg p-3">
-            <div className="flex items-center gap-2 text-amber-700 text-sm font-medium">
+          <div className="bg-amber-950/50 border border-amber-800 rounded-lg p-3">
+            <div className="flex items-center gap-2 text-amber-400 text-sm font-medium">
               <AlertCircle className="w-4 h-4" />
               {urgentCount} quote{urgentCount > 1 ? 's' : ''} expiring soon
             </div>
@@ -84,15 +84,15 @@ export default function Sidebar() {
         </div>
       )}
 
-      <div className="p-4 border-t border-gray-200">
-        <div className="bg-gray-50 rounded-lg p-3">
+      <div className="p-4 border-t border-gray-800">
+        <div className="bg-gray-800 rounded-lg p-3">
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-600">Conversion Rate</span>
-            <span className="font-semibold text-gray-900">
+            <span className="text-gray-400">Conversion Rate</span>
+            <span className="font-semibold text-gray-100">
               {Math.round(stats.conversionRate * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-700 rounded-full h-2">
             <div
               className="bg-success-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${stats.conversionRate * 100}%` }}

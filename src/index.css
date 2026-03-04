@@ -12,14 +12,14 @@
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
 
-  --color-success-50: #f0fdf4;
+  --color-success-50: #052e16;
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
 
-  --color-warning-50: #fffbeb;
+  --color-warning-50: #451a03;
   --color-warning-500: #f59e0b;
 
-  --color-danger-50: #fef2f2;
+  --color-danger-50: #450a0a;
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
 }
@@ -29,4 +29,6 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #0a0a0f;
+  color: #e5e7eb;
 }
